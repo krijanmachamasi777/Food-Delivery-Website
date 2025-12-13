@@ -32,6 +32,18 @@ app.use("/api/cart",cartRouter);
 app.use("/api/order",orderRouter);
 // Serve images folder
 app.use('/images', express.static('uploads'));
+
+import cors from "cors";
+
+app.use(cors({
+  origin: [
+    "https://food-delivery-website-git-main-krijanmachamasi777s-projects.vercel.app",
+    "https://food-delivery-website-a-git-5b144a-krijanmachamasi777s-projects.vercel.app"
+  ],
+  credentials: true,
+}));
+
+
    
 
 
