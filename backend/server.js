@@ -28,7 +28,6 @@ app.use("/api/order", orderRouter);
 // Serve images folder
 app.use("/images", express.static("uploads"));
 
-import cors from "cors";
 
 
 
