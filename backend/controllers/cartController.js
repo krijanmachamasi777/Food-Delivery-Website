@@ -6,7 +6,11 @@ const addToCart = async (req, res) => {
     const userId = req.userId;
 
     const userData = await userModel.findById(userId);
-    const cartData = userData.cartData;
+    if (!userData) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const cartData = userData.cartData || {};
 
     if (!cartData[req.body.itemId]) {
       cartData[req.body.itemId] = 1;
@@ -19,7 +23,7 @@ const addToCart = async (req, res) => {
     res.json({ success: true, message: "Added To Cart" });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error" });
+    res.status(500).json({ success: false, message: "Error adding to cart" });
   }
 };
 
@@ -29,7 +33,11 @@ const removeFromCart = async (req, res) => {
     const userId = req.userId;
 
     const userData = await userModel.findById(userId);
-    const cartData = userData.cartData;
+    if (!userData) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const cartData = userData.cartData || {};
 
     if (cartData[req.body.itemId] > 0) {
       cartData[req.body.itemId] -= 1;
@@ -40,7 +48,7 @@ const removeFromCart = async (req, res) => {
     res.json({ success: true, message: "Removed From Cart" });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error" });
+    res.status(500).json({ success: false, message: "Error removing from cart" });
   }
 };
 
@@ -50,12 +58,16 @@ const getCart = async (req, res) => {
     const userId = req.userId;
 
     const userData = await userModel.findById(userId);
-    const cartData = userData.cartData;
+    if (!userData) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const cartData = userData.cartData || {};
 
     res.json({ success: true, cartData });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error" });
+    res.status(500).json({ success: false, message: "Error fetching cart" });
   }
 };
 
