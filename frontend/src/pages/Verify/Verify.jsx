@@ -1,18 +1,23 @@
 import React, { useContext, useEffect } from "react";
 import "./Verify.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 
 const Verify = () => {
-  const [searchParams] = useSearchParams();
-  const success = searchParams.get("success");
-const orderId =searchParams.get("orderId") || searchParams.get("OrderId");
-
   const { url } = useContext(StoreContext);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const storedData = localStorage.getItem("paymentVerification");
+
+    if (!storedData) {
+      navigate("/");
+      return;
+    }
+
+    const { success, orderId } = JSON.parse(storedData);
+
     if (!success || !orderId) {
       navigate("/");
       return;
@@ -24,6 +29,9 @@ const orderId =searchParams.get("orderId") || searchParams.get("OrderId");
           `${url}/api/order/verify`,
           { success, orderId }
         );
+
+        // Clean up after verification
+        localStorage.removeItem("paymentVerification");
 
         if (response.data.success) {
           navigate("/myorders");
@@ -37,7 +45,7 @@ const orderId =searchParams.get("orderId") || searchParams.get("OrderId");
     };
 
     verifyPayment();
-  }, [success, orderId, url, navigate]);
+  }, [url, navigate]);
 
   return (
     <div className="verify">
