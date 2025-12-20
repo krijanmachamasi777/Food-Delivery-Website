@@ -48,11 +48,11 @@ const frontend_url = process.env.FRONTEND_URL;
     const session = await stripe.checkout.sessions.create({
       line_items,
       mode: "payment",
-      success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
-      cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
+      success_url: `${frontend_url}/verify`,
+      cancel_url: `${frontend_url}/cart`,
     });
 
-    res.json({ success: true, session_url: session.url });
+    res.json({ success: true, session_url: session.url,orderId: newOrder._id, });
   } catch (error) {
     console.error("PLACE ORDER ERROR:", error.message);
     res.status(500).json({ success: false, message: error.message });
