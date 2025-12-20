@@ -47,12 +47,7 @@ const PlaceOrder = () => {
       const { session_url } = response.data;
       
       window.location.replace(session_url);
-      localStorage.setItem(
-    "paymentVerification",
-    JSON.stringify({
-      success: true,
-      orderId: orderId,
-    }));
+      
     }
     else {
       alert("Error processing Payment");
