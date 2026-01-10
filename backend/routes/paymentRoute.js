@@ -97,7 +97,7 @@ paymentRouter.get("/userorders", authMiddleware, async (req, res) => {
 paymentRouter.get("/complete-payment", async (req, res) => {
   const { data } = req.query;
   console.log("ESewa redirect data:", data);
-
+const url = process.env.FRONTEND_URL ;
   try {
     const paymentInfo = await verifyEsewaPayment(data);
     console.log("Verified payment:", paymentInfo);
@@ -165,7 +165,7 @@ paymentRouter.get("/complete-payment", async (req, res) => {
     await userModel.findByIdAndUpdate(purchasedItemData.user, { cartData: {} });
 
     // 3️⃣ Redirect to frontend
-    res.redirect(`http://localhost:5173/myorders`);
+    res.redirect(`${url}/myorders`);
   } catch (error) {
     console.error("COMPLETE PAYMENT ERROR:", error);
     res.status(500).json({

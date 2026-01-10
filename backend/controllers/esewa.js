@@ -15,8 +15,8 @@ const payload = {
   product_code: productCode,
   product_service_charge: "0",
   product_delivery_charge: "0",
-  success_url: "http://localhost:4000/api/payment/complete-payment",
-  failure_url: "http://localhost:4000/api/payment/failed-payment",
+ success_url: `${process.env.BACKEND_URL}/api/payment/complete-payment`,
+  failure_url: `${process.env.BACKEND_URL}/api/payment/failed-payment`,
   signed_field_names: "total_amount,transaction_uuid,product_code",
 };
 if (!amount || isNaN(amount)) {
