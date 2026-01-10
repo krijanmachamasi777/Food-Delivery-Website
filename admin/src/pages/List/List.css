@@ -1,0 +1,169 @@
+/* List.css */
+
+/* Container styling */
+.list {
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.list p {
+  margin: 0;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.list > p:first-child {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Table structure using grid */
+.list-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list-table-format {
+  display: grid;
+  grid-template-columns: 0.8fr 2fr 1fr 1fr 2fr 1.5fr;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.list-table-format:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.list-table-format.title {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+/* Image styling */
+.list-table-format img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.action-buttons button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.action-buttons button:hover {
+  opacity: 0.9;
+}
+
+.action-buttons button:first-child {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.action-buttons .delete-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+/* Inputs when editing */
+.list-table-format input[type="text"],
+.list-table-format input[type="number"],
+.list-table-format input[type="file"] {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+  width: 90%;
+}
+
+.list-table-format input[type="file"] {
+  padding: 3px;
+}
+
+/* Save / Cancel buttons in editing */
+.list-table-format button {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.list-table-format button:first-of-type {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.list-table-format button:last-of-type {
+  background-color: #f44336;
+  color: #fff;
+  margin-left: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .list-table-format {
+    grid-template-columns: 1fr 1.5fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .list-table-format img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .list-table-format p,
+  .list-table-format input {
+    font-size: 12px;
+  }
+
+  .action-buttons {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .list-table-format.title {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .list-table-format {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

@@ -1,0 +1,26 @@
+services:
+  web:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:4000
+    depends_on:
+      - api
+    develop:
+      watch:
+        - path: ./frontend/src
+          target: /app/src
+          action: sync
+
+  api:
+    build: ./backend
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend/.env
+    develop:
+      watch:
+        - path: ./backend
+          target: /app
+          action: sync
