@@ -165,7 +165,7 @@ paymentRouter.get("/complete-payment", async (req, res) => {
     await userModel.findByIdAndUpdate(purchasedItemData.user, { cartData: {} });
 
     // 3️⃣ Redirect to frontend
-    res.redirect(`http://localhost:5173/myorders`);
+    res.redirect(`https://food-delivery-website-nwdwxz8ic-krijanmachamasi777s-projects.vercel.app/myorders`);
   } catch (error) {
     console.error("COMPLETE PAYMENT ERROR:", error);
     res.status(500).json({
