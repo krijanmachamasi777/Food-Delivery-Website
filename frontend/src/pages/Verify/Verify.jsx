@@ -1,34 +1,49 @@
-import React, { useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import "./Verify.css";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
-import './Verify.css'
 
-export default function VerifyPayment() {
+const Verify = () => {
   const [searchParams] = useSearchParams();
-  const data = searchParams.get("data");
+  const success = searchParams.get("success");
+const orderId =searchParams.get("orderId") || searchParams.get("OrderId");
+
+  const { url } = useContext(StoreContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!data) {
+    if (!success || !orderId) {
       navigate("/");
       return;
     }
 
-    const verify = async () => {
+    const verifyPayment = async () => {
       try {
-        await axios.get(
-          `https://food-delivery-website-3068.onrender.com/api/payment/complete-payment`,
-          { params: { data } }
+        const response = await axios.post(
+          `${url}/api/order/verify`,
+          { success, orderId }
         );
-        navigate("/myorders");
+
+        if (response.data.success) {
+          navigate("/myorders");
+        } else {
+          navigate("/");
+        }
       } catch (error) {
-        console.error("Payment verification failed:", error);
+        console.error("VERIFY ERROR:", error);
         navigate("/");
       }
     };
 
-    verify();
-  }, [data, navigate]);
+    verifyPayment();
+  }, [success, orderId, url, navigate]);
 
-  return <div>Verifying your payment...</div>;
-}
+  return (
+    <div className="verify">
+      <div className="spinner"></div>
+    </div>
+  );
+};
+
+export default Verify;
