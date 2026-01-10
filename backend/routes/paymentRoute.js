@@ -17,72 +17,63 @@ const paymentRouter = express.Router();
 ====================================================== */
 paymentRouter.post("/initialize-esewa", authMiddleware, async (req, res) => {
   try {
+    console.log("REQUEST BODY:", req.body);
     const { items, address } = req.body;
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return res
-        .status(400)
-        .json({ success: false, message: "No items provided" });
+    if (!items || items.length === 0) {
+      return res.status(400).json({ success: false, message: "No items provided" });
     }
+    console.log("Items OK");
 
     if (!address) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Address is required" });
+      return res.status(400).json({ success: false, message: "Address required" });
     }
+    console.log("Address OK");
 
     let subtotal = 0;
-
     for (const i of items) {
+      console.log("Processing item:", i);
       const dbItem = await Item.findById(i._id);
-      if (!dbItem) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Item not found" });
-      }
+      console.log("DB Item:", dbItem);
+      if (!dbItem)
+        return res.status(400).json({ success: false, message: "Item not found" });
 
       const quantity = Number(i.quantity);
-      if (!quantity || quantity <= 0) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid quantity" });
-      }
+      if (!quantity || quantity <= 0)
+        return res.status(400).json({ success: false, message: "Invalid quantity" });
 
       subtotal += dbItem.price * quantity;
     }
+    console.log("Subtotal calculated:", subtotal);
 
     const deliveryFee = 50;
     const totalPrice = Number((subtotal + deliveryFee).toFixed(2));
+    console.log("Total price:", totalPrice);
 
-    // 1️⃣ Create PurchasedItem (PENDING)
     const purchasedItemData = await PurchasedItem.create({
       user: req.userId,
-      items: items.map((i) => ({
-        item: i._id,
-        quantity: i.quantity,
-      })),
+      items: items.map(i => ({ item: i._id, quantity: i.quantity })),
       totalPrice,
       paymentMethod: "esewa",
       status: "pending",
       paymentStatus: "unpaid",
       address,
     });
+    console.log("PurchasedItem created:", purchasedItemData);
 
-    // 2️⃣ Generate eSewa payment payload
     const paymentInitiate = getEsewaPaymentHash({
       amount: totalPrice,
       transaction_uuid: purchasedItemData._id.toString(),
     });
+    console.log("Payment payload created");
 
-    res.status(200).json({
-      success: true,
-      payment: paymentInitiate,
-    });
+    res.status(200).json({ success: true, payment: paymentInitiate });
   } catch (error) {
     console.error("INIT ESEWA ERROR:", error);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message, stack: error.stack });
   }
 });
+
 
 /* ======================================================
    GET USER ORDERS
