@@ -1,51 +1,34 @@
 import React, { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Verify.css";
+import './Verify.css'
 
-const Verify = () => {
+export default function VerifyPayment() {
   const [searchParams] = useSearchParams();
-  const data = searchParams.get("data"); // eSewa sends ?data=BASE64
+  const data = searchParams.get("data");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!data) {
-      // No data → redirect home
       navigate("/");
       return;
     }
 
-    const verifyPayment = async () => {
+    const verify = async () => {
       try {
-        const response = await axios.get(
+        await axios.get(
           `https://food-delivery-website-3068.onrender.com/api/payment/complete-payment`,
-          {
-            params: { data },
-          }
+          { params: { data } }
         );
-
-        if (response.data.success !== false) {
-          // Redirect to My Orders after verification
-          navigate("/myorders");
-        } else {
-          console.error("Payment verification failed:", response.data);
-          navigate("/");
-        }
+        navigate("/myorders");
       } catch (error) {
-        console.error("VERIFY ERROR:", error);
+        console.error("Payment verification failed:", error);
         navigate("/");
       }
     };
 
-    verifyPayment();
+    verify();
   }, [data, navigate]);
 
-  return (
-    <div className="verify">
-      <div className="spinner"></div>
-      <p>Verifying your payment...</p>
-    </div>
-  );
-};
-
-export default Verify;
+  return <div>Verifying your payment...</div>;
+}
