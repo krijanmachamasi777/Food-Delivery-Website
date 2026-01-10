@@ -1,33 +1,34 @@
-import React, { useContext, useEffect } from "react";
-import "./Verify.css";
+import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
+import "./Verify.css";
 
 const Verify = () => {
   const [searchParams] = useSearchParams();
-  const success = searchParams.get("success");
-const orderId =searchParams.get("orderId") || searchParams.get("OrderId");
-
-  const { url } = useContext(StoreContext);
+  const data = searchParams.get("data"); // eSewa sends ?data=BASE64
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!success || !orderId) {
+    if (!data) {
+      // No data → redirect home
       navigate("/");
       return;
     }
 
     const verifyPayment = async () => {
       try {
-        const response = await axios.post(
-          `${url}/api/order/verify`,
-          { success, orderId }
+        const response = await axios.get(
+          `https://food-delivery-website-3068.onrender.com/api/payment/complete-payment`,
+          {
+            params: { data },
+          }
         );
 
-        if (response.data.success) {
+        if (response.data.success !== false) {
+          // Redirect to My Orders after verification
           navigate("/myorders");
         } else {
+          console.error("Payment verification failed:", response.data);
           navigate("/");
         }
       } catch (error) {
@@ -37,11 +38,12 @@ const orderId =searchParams.get("orderId") || searchParams.get("OrderId");
     };
 
     verifyPayment();
-  }, [success, orderId, url, navigate]);
+  }, [data, navigate]);
 
   return (
     <div className="verify">
       <div className="spinner"></div>
+      <p>Verifying your payment...</p>
     </div>
   );
 };
